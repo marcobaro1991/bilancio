@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+if [ "$1" == "mix" ]; then
+  exec "$@"
+elif [ -n "$1" ]; then
+  sh -c "$@"
+else
+  mix local.hex --force
+  mix hex.info
+  mix deps.get
+  mix ecto.setup
+  mix phx.server
+
+  trap : TERM INT; sleep infinity & wait
+fi

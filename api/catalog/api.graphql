@@ -1,0 +1,136 @@
+schema {
+  query: RootQueryType
+  mutation: RootMutationType
+}
+
+type Category {
+  color: String
+  identifier: Uuid!
+  title: String!
+}
+
+union CreateMovementResponse = Movement | MovementNotCreated
+
+"""date"""
+scalar Date
+
+"""ISO8601 time"""
+scalar Datetime
+
+type DeleteMovementFailure {
+  error: String!
+}
+
+union DeleteMovementResponse = DeleteMovementFailure | DeleteMovementSuccess
+
+type DeleteMovementSuccess {
+  message: String!
+}
+
+input InputMovement {
+  description: String
+  occurredAt: Date!
+  title: String!
+  value: Float!
+}
+
+enum LoginError {
+  ALREADY_LOGGED_IN
+  UNKNOWN
+  WRONG_CREDENTIAL
+}
+
+type LoginFailure {
+  error: LoginError!
+}
+
+union LoginResponse = LoginFailure | LoginSuccess
+
+type LoginSuccess {
+  identifier: String!
+  token: String!
+}
+
+enum LogoutError {
+  TOKEN_NOT_STORED
+  UNKNOWN
+}
+
+type LogoutFailure {
+  error: LogoutError!
+}
+
+union LogoutResponse = LogoutFailure | LogoutSuccess
+
+type LogoutSuccess {
+  message: String!
+}
+
+type Movement {
+  description: String
+  identifier: Uuid!
+  occurredAt: Date!
+  title: String!
+  value: Float!
+}
+
+enum MovementCreatedError {
+  UNKNOWN
+}
+
+type MovementNotCreated {
+  error: MovementCreatedError!
+}
+
+input MovementsOrder {
+  by: MovementsOrderBy!
+  type: MovementsOrderType!
+}
+
+enum MovementsOrderBy {
+  OCCURRED_AT
+  TITLE
+  VALUE
+}
+
+enum MovementsOrderType {
+  ASC
+  DESC
+}
+
+type RootMutationType {
+  createMovement(movement: InputMovement!): CreateMovementResponse!
+  deleteMovement(identifier: Uuid!): DeleteMovementResponse!
+  login(email: String!, password: String!): LoginResponse!
+  logout: LogoutResponse!
+}
+
+type RootQueryType {
+  categories: [Category]!
+  me: User
+  movement(identifier: Uuid!): Movement
+}
+
+type User {
+  email: String!
+  firstName: String!
+  identifier: Uuid!
+  insertedAt: Datetime!
+  lastName: String!
+  movements(order: MovementsOrder): [Movement]!
+  registrationType: UserRegistrationType!
+  status: UserStatus!
+}
+
+enum UserRegistrationType {
+  DEFAULT
+  GOOGLE
+}
+
+enum UserStatus {
+  ACTIVE
+  NOT_ACTIVE
+}
+
+"""uuid v4 unique identifier"""
+scalar Uuid
