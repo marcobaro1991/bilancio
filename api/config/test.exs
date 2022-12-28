@@ -38,6 +38,10 @@ config :joken, default_signer: "secret"
 
 config :bilancio, :redis, connection_url: "redis://redis:6379/1"
 
+if System.get_env("GITHUB_ACTIONS") do
+  config :bilancio, :redis, connection_url: "redis://localhost:6379/1"
+end
+
 config :bilancio, :jwt,
   sign: "HS256",
   exp_days: 7
