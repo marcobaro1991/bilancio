@@ -9,6 +9,16 @@ type Category {
   title: String!
 }
 
+enum CategoryCreatedError {
+  UNKNOWN
+}
+
+type CategoryNotCreated {
+  error: CategoryCreatedError!
+}
+
+union CreateCategoryResponse = Category | CategoryNotCreated
+
 union CreateMovementResponse = Movement | MovementNotCreated
 
 """date"""
@@ -16,6 +26,20 @@ scalar Date
 
 """ISO8601 time"""
 scalar Datetime
+
+enum DeactivateUserError {
+  UNKNOWN
+}
+
+type DeactivateUserFailure {
+  error: DeactivateUserError!
+}
+
+union DeactivateUserResponse = DeactivateUserFailure | DeactivateUserSuccess
+
+type DeactivateUserSuccess {
+  message: String!
+}
 
 type DeleteMovementFailure {
   error: String!
@@ -25,6 +49,11 @@ union DeleteMovementResponse = DeleteMovementFailure | DeleteMovementSuccess
 
 type DeleteMovementSuccess {
   message: String!
+}
+
+input InputCategory {
+  color: String
+  title: String!
 }
 
 input InputMovement {
@@ -99,7 +128,9 @@ enum MovementsOrderType {
 }
 
 type RootMutationType {
+  createCategory(category: InputCategory!): CreateCategoryResponse!
   createMovement(movement: InputMovement!): CreateMovementResponse!
+  deactivateUser: DeactivateUserResponse!
   deleteMovement(identifier: Uuid!): DeleteMovementResponse!
   login(email: String!, password: String!): LoginResponse!
   logout: LogoutResponse!
