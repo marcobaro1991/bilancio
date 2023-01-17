@@ -8,6 +8,7 @@ defmodule Bilancio.Graphql.Schema do
   import_types Bilancio.Graphql.Types.Custom.Decimal
   import_types Bilancio.Graphql.Types.User
   import_types Bilancio.Graphql.Types.Category
+  import_types Bilancio.Graphql.Types.Movement
 
   def context(context) do
     loader = Dataloader.new()

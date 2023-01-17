@@ -13,9 +13,29 @@ defmodule Bilancio.Graphql.Resolver.Category do
 
   alias Absinthe.Resolution
 
+  @spec get(map(), any()) :: {:ok, CategorySchema.t()}
+  def get(_args, %Resolution{
+        source: %{category_id: category_id},
+        context: %{
+          current_user: %Bilancio.Domain.User{identifier: _user_identifier},
+          authorization_token: _authorization_token
+        }
+      }) do
+    category_id
+    |> CategoryApplication.get_by_id()
+    |> Either.wrap()
+  end
+
   @spec get_all(map(), any()) :: {:ok, [CategorySchema.t()]}
-  def get_all(_args, _info) do
-    Either.wrap(CategoryApplication.get_all_except_belogs_to_user())
+  def get_all(_args, %Resolution{
+        context: %{
+          current_user: %Bilancio.Domain.User{identifier: user_identifier},
+          authorization_token: _authorization_token
+        }
+      }) do
+    user_identifier
+    |> CategoryApplication.get_by_user_identifier()
+    |> Either.wrap()
   end
 
   @spec create_category(map(), any()) :: {:ok, CategorySchema.t() | %{error: String.t()}}

@@ -5,7 +5,7 @@ defmodule Bilancio.Repo.Migrations.AddUsers do
 
   @user_registration_type :user_registration_type
 
-  def change do
+  def up do
     execute(
       """
         CREATE TYPE #{@user_status_type}

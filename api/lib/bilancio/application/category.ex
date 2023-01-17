@@ -9,11 +9,35 @@ defmodule Bilancio.Application.Category do
 
   require Logger
 
-  @spec get_all_except_belogs_to_user :: [CategorySchema.t()]
-  def get_all_except_belogs_to_user do
+  @spec get_by_id(integer() | nil) :: CategorySchema.t() | nil
+  def get_by_id(nil) do
+    nil
+  end
+
+  def get_by_id(id) do
     CategorySchema
-    |> CategorySchema.get_all_by_user_id(nil)
-    |> Repo.all()
+    |> CategorySchema.get_by_id(id)
+    |> Repo.one()
+    |> case do
+      res = %CategorySchema{} -> res
+      _ -> nil
+    end
+  end
+
+  @spec get_by_user_identifier(String.t()) :: [CategorySchema.t()]
+  def get_by_user_identifier(user_identifier) do
+    user_identifier
+    |> UserApplication.get_by_identifier()
+    |> case do
+      %UserSchema{id: user_id} ->
+        CategorySchema
+        |> CategorySchema.get_all_by_user_id(user_id)
+        |> Repo.all()
+
+      _ ->
+        Logger.error("User  #{inspect(user_identifier)} not found")
+        []
+    end
   end
 
   @spec create(map(), integer()) :: CategorySchema.t() | %{error: any()}

@@ -9,6 +9,7 @@ defmodule Bilancio.Schema.Movement do
 
   schema "movements" do
     field :user_id, :integer
+    field :category_id, :integer
     field :title, :string
     field :identifier, :string
     field :description, :string
