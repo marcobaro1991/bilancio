@@ -11,6 +11,7 @@ defmodule Bilancio.Graphql.Types.Movement do
     field :description, :string
     field :value, non_null(:float)
     field :occurred_at, non_null(:date)
+    field :category_identifier, :uuid
   end
 
   input_object :movements_order do

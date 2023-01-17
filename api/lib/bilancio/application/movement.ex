@@ -5,7 +5,9 @@ defmodule Bilancio.Application.Movement do
 
   alias Bilancio.Schema.User, as: UserSchema
   alias Bilancio.Schema.Movement, as: MovementSchema
+  alias Bilancio.Schema.Category, as: CategorySchema
   alias Bilancio.Application.User, as: UserApplication
+  alias Bilancio.Application.Category, as: CategoryApplication
 
   require Logger
 
@@ -52,8 +54,18 @@ defmodule Bilancio.Application.Movement do
 
   @spec create(map(), integer()) :: MovementSchema.t() | %{error: any()}
   def create(data, user_id) do
+    category_id =
+      data
+      |> Map.get(:category_identifier, nil)
+      |> CategoryApplication.get_by_identifier()
+      |> case do
+        %CategorySchema{id: id} -> id
+        _ -> nil
+      end
+
     %MovementSchema{
       user_id: user_id,
+      category_id: category_id,
       identifier: UUID.string_to_binary!(UUID.uuid4()),
       title: data |> Map.get(:title) |> String.trim(),
       description: data |> Map.get(:description, nil) |> format_description(),

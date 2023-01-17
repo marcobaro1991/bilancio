@@ -24,6 +24,21 @@ defmodule Bilancio.Application.Category do
     end
   end
 
+  @spec get_by_identifier(String.t() | nil) :: CategorySchema.t() | nil
+  def get_by_identifier(nil) do
+    nil
+  end
+
+  def get_by_identifier(identifier) do
+    CategorySchema
+    |> CategorySchema.get_by_identifier(UUID.string_to_binary!(identifier))
+    |> Repo.one()
+    |> case do
+      res = %CategorySchema{} -> res
+      _ -> nil
+    end
+  end
+
   @spec get_by_user_identifier(String.t()) :: [CategorySchema.t()]
   def get_by_user_identifier(user_identifier) do
     user_identifier

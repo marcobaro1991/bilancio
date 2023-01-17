@@ -4,7 +4,6 @@ defmodule Bilancio.Graphql.Types.User do
   use Absinthe.Schema.Notation
 
   alias Bilancio.Graphql.Resolver.User
-  alias Bilancio.Graphql.Resolver.Category
   alias Bilancio.Graphql.Middleware.UserAuthentication
   alias Noether.Either
 

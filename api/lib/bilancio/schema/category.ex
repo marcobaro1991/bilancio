@@ -21,6 +21,11 @@ defmodule Bilancio.Schema.Category do
       where: u.id == ^id
   end
 
+  def get_by_identifier(query, identifier) do
+    from u in query,
+      where: u.identifier == ^identifier
+  end
+
   def get_all_by_user_id(query, nil) do
     from u in query,
       where: is_nil(u.user_id)
